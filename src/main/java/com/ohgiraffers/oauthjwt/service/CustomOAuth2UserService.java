@@ -52,22 +52,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
-
+        System.out.println("username = " + username);
         UserEntity existData = userMapper.findByUsername(username);
 
         if (existData == null) {
 
             UserEntity userEntity = new UserEntity();
+
             userEntity.setUsername(username);
             userEntity.setEmail(oAuth2Response.getEmail());
             userEntity.setName(oAuth2Response.getName());
             userEntity.setRole("ROLE_USER");
 
             userMapper.saveUserEntity(userEntity);
-
-//            // Refresh token 관리 예시
-//            String refreshToken = generateRefreshToken();
-//            addRefreshEntity(username, refreshToken, 86400000L);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setUsername(username);
@@ -79,14 +76,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             existData.setEmail(oAuth2Response.getEmail());
             existData.setName(oAuth2Response.getName());
-
-            userMapper.saveUserEntity(existData);
-
-//            // Refresh token 관리 예시
-//            String refreshToken = generateRefreshToken();
-//            addRefreshEntity(username, refreshToken ,86400000L);
-
             UserDTO userDTO = new UserDTO();
+
+            userDTO.setEmail(existData.getEmail());
+            userDTO.setName(existData.getName());
+
             userDTO.setUsername(existData.getUsername());
             userDTO.setName(oAuth2Response.getName());
             userDTO.setRole(existData.getRole());
